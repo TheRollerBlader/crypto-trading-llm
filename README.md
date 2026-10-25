@@ -12,10 +12,10 @@
 ---
 
 <p align="center">
-  <img src="assets/3d_preview.gif" alt="3D Order Book Depth & Quantitative Risk Barriers" width="100%" />
+  <img src="assets/equity_replay.gif" alt="Equity curve drawing itself against buy and hold" width="100%" />
 </p>
 <p align="center">
-  <em><strong>Figure 1:</strong> Dynamic 3D Order Book Depth Surface (Bid/Ask Volume vs. Relative Price Delta vs. Time Horizon) featuring real-time trade execution pulses, dynamic liquidity clusters, ATR stop-loss barriers (1.8× ATR), and take-profit targets (3.0× ATR).</em>
+  <em><strong>Figure 1:</strong> The backtest equity curve drawing itself from 23 Jun 2026. Cyan is the MOM-03 baseline. Gray is buy and hold entered at the same time. The baseline finishes at -1.11%. Buy and hold finishes at +30.99%.</em>
 </p>
 
 ---
@@ -86,30 +86,24 @@ flowchart TD
 The multi-panel dashboard below synthesizes backtest telemetry across 2,943 evaluation hours (2026-06-23 through 2026-10-24) using historical candles from Binance.US and simulated execution incorporating 10 bps exchange fees and 5 bps execution slippage.
 
 <p align="center">
-  <img src="assets/performance_metrics.png" alt="Algorithmic Trading Benchmark & Execution Telemetry" width="100%" />
+  <img src="assets/performance.png" alt="Cumulative return and drawdown from the backtest" width="100%" />
 </p>
 <p align="center">
-  <em><strong>Figure 2:</strong> Multi-panel algorithmic performance analysis. <strong>Top-Left:</strong> Cumulative strategy return (-1.11%) illustrating strict capital preservation vs. buy-and-hold benchmark (+30.99%). <strong>Bottom-Left:</strong> Underwater drawdown strictly bounded within -1.65% under active circuit breakers (-3.0% daily loss, -15.0% max drawdown). <strong>Top-Right:</strong> Sub-cycle latency profiling highlighting sub-millisecond (<0.4ms) deterministic risk gating. <strong>Bottom-Right:</strong> Disposition breakdown of LLM proposals by the risk manager.</em>
+  <em><strong>Figure 2:</strong> Same series as a still. Baseline max drawdown is -1.65%. Buy-and-hold max drawdown on this mark-to-market path is -12.27%.</em>
 </p>
 
-### MOM-03 Parameter Optimization Hypersurface
-
-The 3D surface plot below analyzes Sharpe ratio sensitivity across stop-loss ($\lambda_{\text{SL}} \cdot \text{ATR}$) and take-profit ($\lambda_{\text{TP}} \cdot \text{ATR}$) multipliers for the MOM-03 momentum capture model.
-
 <p align="center">
-  <img src="assets/3d_surface.png" alt="MOM-03 Parameter Optimization Hypersurface" width="100%" />
+  <img src="assets/path_3d.gif" alt="Rotating 3D path of BTC return, ETH return, and strategy return" width="100%" />
 </p>
 <p align="center">
-  <em><strong>Figure 3:</strong> 3D Sharpe ratio optimization landscape across stop-loss and take-profit parameters. Demonstrates the global alpha peak ($\mathcal{S} = 1.58$ at $\lambda_{\text{SL}} = 1.9\times, \lambda_{\text{TP}} = 3.2\times$), the baseline deployment parameters ($\lambda_{\text{SL}} = 1.8\times, \lambda_{\text{TP}} = 3.0\times$), and the severe churn zone ($\lambda_{\text{SL}} < 1.2\times$) where excessive whipsaws degrade risk-adjusted expectancy.</em>
+  <em><strong>Figure 3:</strong> One point per hour. X is the BTC return from the 23 Jun entry, Y is the ETH return, Z is the baseline return. The line grows through the backtest and the camera turns. A still is in <code>assets/path_3d.png</code>.</em>
 </p>
 
-### Quantitative Risk & Signal Expectancy Matrices
-
 <p align="center">
-  <img src="assets/results_heatmap.png" alt="Quantitative Risk Heatmap & Multi-Factor Signal Matrix" width="100%" />
+  <img src="assets/trades_3d.gif" alt="Orbit around the closed trades" width="100%" />
 </p>
 <p align="center">
-  <em><strong>Figure 4:</strong> <strong>Left:</strong> Cross-asset hourly return correlation matrix across major crypto pairs (BTC, ETH, SOL, AVAX) with diagonal cells displaying maximum peak drawdowns maintained under portfolio exposure caps (40% notional). <strong>Right:</strong> Trade expectancy grid (basis points per trade) mapped across LLM proposal confidence quantiles and multi-source social sentiment polarity.</em>
+  <em><strong>Figure 4:</strong> Each closed trade. X is hours held, Y is the price change from entry to exit, Z is realized PnL after fees. Amber is BTC/USDT, cyan is ETH/USDT. The bars of the same PnL are in <code>assets/trade_pnl.png</code>.</em>
 </p>
 
 ### Benchmark Summary Table
@@ -118,9 +112,9 @@ The 3D surface plot below analyzes Sharpe ratio sensitivity across stop-loss ($\
 | :--- | :---: | :---: | :--- |
 | **Total Return** | **-1.11%** | +30.99% | Bounded by capital preservation rules |
 | **Initial / Ending Equity** | 10,000.00 → **9,888.93 USDT** | 10,000.00 → 13,099.00 USDT | Net realized PnL: -111.07 USDT |
-| **Maximum Drawdown** | **-1.65%** | -18.40% | Capped well below 15.0% portfolio circuit breaker |
-| **Daily Loss Limit** | **0.00% Breached** | -8.70% (Peak 24h drop) | Hard latch at -3.00% daily loss |
-| **Annualized Sharpe Ratio** | **-2.16** | +1.18 | Low-volatility flat loss profile |
+| **Maximum Drawdown** | **-1.65%** | -12.27% | Below the 15% portfolio latch |
+| **Daily Loss Limit** | Not hit | n/a | Hard latch at -3.00% daily loss |
+| **Annualized Sharpe Ratio** | **-2.16** | +2.28 | Daily returns, scaled by sqrt(365) |
 | **Closed Round-Trips** | **44 Trades** | 1 Round Trip per symbol | Max 8 trades/day limit enforced |
 | **Win Rate** | **34.1%** (15 of 44) | n/a | Protective stops exited losing trades early |
 | **Total Fees Paid** | **87.67 USDT** | Included in benchmark | 10 bps fee + 5 bps slippage model |
@@ -149,7 +143,7 @@ Requires **Python 3.11** or newer.
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/crypto-trading-llm.git
+git clone https://github.com/TheRollerBlader/crypto-trading-llm.git
 cd crypto-trading-llm
 
 # Initialize virtual environment
@@ -309,12 +303,15 @@ The 67 test cases validate:
 ├── pyproject.toml              # Build metadata and pytest configuration
 ├── requirements.txt            # Python dependencies
 ├── VALIDATION_REPORT.md        # Comprehensive test run and backtest verification report
-├── assets/                     # 3D visualizations, animated simulation, and benchmark charts
-│   ├── 3d_preview.gif          # 3D dynamic order book depth & risk barrier simulation
-│   ├── 3d_simulation.mp4       # High-definition MP4 render of 3D liquidity simulation
-│   ├── 3d_surface.png          # 3D Sharpe ratio optimization hypersurface
-│   ├── performance_metrics.png # 4-panel algorithmic benchmark and latency dashboard
-│   └── results_heatmap.png     # Cross-asset correlation and sentiment expectancy matrices
+├── assets/                     # Figures rendered from the stored backtest
+│   ├── equity_replay.gif       # Equity curve drawing itself against buy and hold
+│   ├── path_3d.gif             # Rotating 3D path of BTC, ETH, and strategy returns
+│   ├── path_3d.png             # Still of that path
+│   ├── trades_3d.gif           # Orbit around the closed-trade cloud
+│   ├── trades_3d.png           # Still of the closed trades
+│   ├── performance.png         # Return and drawdown
+│   └── trade_pnl.png           # Realized PnL of each trade
+├── scripts/render_visuals.py   # Rebuilds assets/ from logs/agent.sqlite and data/cache
 ├── core/                       # Pydantic data schemas, safety latches, and clock utilities
 ├── data/                       # Candlestick caching, indicator math, and social ingestion
 ├── signals/sentiment.py        # Lexicon and LLM sentiment scorers with spam filtration

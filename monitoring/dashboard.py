@@ -56,6 +56,19 @@ def main() -> None:
     st.subheader("Closed trades")
     trades = stats["trades"]
     st.dataframe(pd.DataFrame(trades) if trades else pd.DataFrame(columns=["symbol", "realized_pnl", "reason"]), use_container_width=True)
+    assets = project_root() / "assets"
+    clips = [
+        ("Equity replay", assets / "equity_replay.gif"),
+        ("3D market path", assets / "path_3d.gif"),
+        ("3D trades", assets / "trades_3d.gif"),
+    ]
+    available = [(title, path) for title, path in clips if path.exists()]
+    if available:
+        st.subheader("Replays")
+        st.caption("These are rendered from the stored backtest. Regenerate them with python scripts/render_visuals.py.")
+        for title, path in available:
+            st.markdown(f"**{title}**")
+            st.image(str(path))
 
 
 if __name__ == "__main__":
